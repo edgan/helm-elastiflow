@@ -1,4 +1,4 @@
-replicaCount: 2
+replicaCount: 1
 
 podDisruptionBudget:
   maxUnavailable: 1
@@ -95,7 +95,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity:
-  enabled: true
+  #enabled: true
   #weight: 10
   ### logstash is the heavy lifter, if possible try to loadbalance between nodes as best as possible
 
@@ -131,7 +131,7 @@ readinessProbe:
 
 ### persistence not recommended - io can easily become a bottleneck and logstash will start dropping flow packets
 persistence:
-  enabled: false
+  enabled: true
   ## logstash data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -139,32 +139,32 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
+  storageClass: openebs-jiva-default
   accessMode: ReadWriteOnce
   size: 2Gi
 
-volumeMounts:
-  - name: data
-    mountPath: /usr/share/logstash/data
-  - name: elastiflow-pipeline
-    mountPath: /usr/share/logstash/config/pipelines.yml
-    subPath: pipelines.yml
-  - name: logstash-jvm-options
-    mountPath: /usr/share/logstash/config/jvm.options
-    subPath: jvm.options
+#volumeMounts:
+#  - name: data
+#    mountPath: /usr/share/logstash/data
+#  - name: elastiflow-pipeline
+#    mountPath: /usr/share/logstash/config/pipelines.yml
+#    subPath: pipelines.yml
+#  - name: logstash-jvm-options
+#    mountPath: /usr/share/logstash/config/jvm.options
+#    subPath: jvm.options
 #  - name: pipeline
 #    mountPath: /usr/share/logstash/pipeline
 
-volumes:
+#volumes:
   # - name: tls
   #   secret:
   #     secretName: logstash-tls
-  - name: elastiflow-pipeline
-    configMap:
-      name: elastiflow-pipeline
-      items:
-      - key: pipelines.yaml
-        path: pipelines.yml
+#  - name: elastiflow-pipeline
+#    configMap:
+#      name: elastiflow-pipeline
+#      items:
+#      - key: pipelines.yaml
+#        path: pipelines.yml
   # - name: certs
   #   hostPath:
   #     path: /tmp
@@ -227,6 +227,7 @@ config:
   ELASTIFLOW_NAMESERVER: "127.0.0.1"
   ELASTIFLOW_DNS_HIT_CACHE_TTL: 900
   ELASTIFLOW_DNS_FAILED_CACHE_TTL: 3600
+  LS_JAVA_OPTS: '-Xms4g -Xmx4g'
 
 ## Patterns for filters.
 ## Each YAML heredoc will become a separate pattern file.

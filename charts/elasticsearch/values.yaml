@@ -65,7 +65,7 @@ cluster:
 
 client:
   name: client
-  replicas: 4
+  replicas: 1
   serviceType: ClusterIP
   nodePort: {}
   loadBalancerIP: {}
@@ -118,7 +118,7 @@ client:
 master:
   name: master
   exposeHttp: false
-  replicas: 3
+  replicas: 2
   heapSize: "1024m"
   #### java options seem to get ignored
   # additionalJavaOpts: "-XX:MaxRAM=512m"
@@ -127,7 +127,7 @@ master:
     accessMode: ReadWriteOnce
     name: data
     size: "4Gi"
-    # storageClass: "ssd"
+    storageClass: openebs-jiva-default
   readinessProbe:
     httpGet:
       path: /_cluster/health?local=true
@@ -165,7 +165,7 @@ master:
 data:
   name: data
   exposeHttp: false
-  replicas: 4
+  replicas: 1
   heapSize: "2048m"
   #### java options seem to get ignored
   # additionalJavaOpts: "-XX:MaxRAM=1536m"
@@ -173,8 +173,8 @@ data:
     enabled: true
     accessMode: ReadWriteOnce
     name: data
-    size: "1Ti"
-    # storageClass: "ssd"
+    size: "20Gi"
+    storageClass: openebs-jiva-default
   readinessProbe:
     httpGet:
       path: /_cluster/health?local=true
